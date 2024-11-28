@@ -1,26 +1,10 @@
 import base64
-import lzma
-import pickle
-import hmac
-import hashlib
 
-def فك_التشفير(البيانات_المشفرة, التوقيع, المفتاح):
+def decrypt(encoded_data):
+    """
+    تفك تشفير النص المشفر باستخدام Base64
+    """
     try:
-        # فك تشفير Base64
-        compressed_data = base64.b64decode(البيانات_المشفرة)
-
-        # التحقق من صحة البيانات باستخدام HMAC
-        if not hmac.compare_digest(التوقيع, hmac.new(المفتاح, compressed_data, hashlib.sha256).hexdigest()):
-            raise ValueError("توقيع HMAC غير صالح. تم تعديل البيانات.")
-
-        # فك الضغط باستخدام LZMA
-        decompressed_data = lzma.decompress(compressed_data)
-
-        # تحميل الكود باستخدام pickle
-        code = pickle.loads(decompressed_data)
-
-        # تنفيذ الكود
-        exec(compile(code, filename="<string>", mode="exec"))
-
+        return base64.b64decode(encoded_data).decode('utf-8')
     except Exception as e:
-        print(f"خطأ أثناء فك التشفير: {e}")
+        return f"خطأ أثناء فك التشفير: {e}"
